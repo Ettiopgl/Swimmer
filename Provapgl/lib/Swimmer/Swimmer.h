@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 
+//Qua bisogna fare il commento della classe.
 class Swimmer{
   private:
     static Adafruit_NeoPixel * strip;
