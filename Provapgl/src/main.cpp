@@ -38,5 +38,10 @@ void loop(){
     timer2 = millis();
 
   }
+  if (millis()-timer3 > 10 && millis() - start3 > 3000){
+    s3.autoStep(true);
+    timer3 = millis();
+
+  }
   Swimmer::show();
 }
