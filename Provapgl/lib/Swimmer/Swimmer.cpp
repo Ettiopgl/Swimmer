@@ -76,3 +76,11 @@ void Swimmer::autoStep(bool autoLightUp = false){
   if (autoLightUp)
     lightup();
 }
+
+void Swimmer::checkVasche();{ //controllo numero vasche (100/25=4 vasche poi ti fermi per trecripetizioni)
+if(nVasche==vasche){
+  nRipetizioni++;
+  start =tRecripetizioni+millis();
+}
+
+}
