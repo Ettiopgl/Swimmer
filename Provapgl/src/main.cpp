@@ -6,16 +6,31 @@
 #include <Swimmer.h>
 
 Adafruit_NeoPixel * strip = new Adafruit_NeoPixel(110, 30, NEO_GRB + NEO_KHZ800);
-Swimmer s (5, 0, 1, 255, 0, 0); //classe Swimmer oggetto s  (numero led Segmento=3,posizione=0,step=1,numero led=300,pin=30)
-Swimmer s2 (5, 0, 1, 0, 255, 0);
-Swimmer s3 (5, 0, 1, 0, 0, 255);
-unsigned long timer1, timer2, timer3, start1, start2, start3 ;
+
+
+
+//Swimmer(segmento,posizione,step,r,g,b,vascheragg,nripragg,nserieragg,ntotvasche,ntotripetizioni,ntotserie)
+// Swimmer(Segmento,posizione,step,r,g,b, nripragg,ntotripetizioni, nserieragg, ntotserie)
+Swimmer s (5, 0, 1, 255, 0, 0, 0,0,0, 3, 4, 5);
+Swimmer s2 (5, 0, 1, 0, 255, 0, 0,0,0, 3, 4, 5);
+Swimmer s3 (5, 0, 1, 0, 0, 255,0,0,0,  3, 4, 5);
+
+//Swimmer s (5, 0, 1, 255, 0, 0); //classe Swimmer oggetto s  (numero led Segmento=3,posizione=0,step=1,numero led=300,pin=30)
+//Swimmer s2 (5, 0, 1, 0, 255, 0);
+//Swimmer s3 (5, 0, 1, 0, 0, 255);
+unsigned long timer1, timer2, timer3, start1, start2, start3;
+
+unsigned int pausaRip;
+unsigned int pausaSerie;
+// unsigned long tRecripetizioni=15000;
 
 /// ciao
 void setup(){
   Serial.begin(115200);
   Serial.println("Fine setup");
   Swimmer::setStrip(strip);
+  pausaRip=0;
+  pausaSerie=0;
   timer1 = millis();
   timer2 = timer1;
   timer3 = timer1;
@@ -30,8 +45,10 @@ void loop(){
 
     s.autoStep(true);
 
+start1=millis()+pausaRip+pausaSerie;
+
     timer1 = millis();
-    Swimmer::show();
+  //  Swimmer::show();
   }
   if (millis()-timer2 > 40 && millis() - start2 > 2000){
     s2.autoStep(true);
@@ -44,4 +61,12 @@ void loop(){
 
   }
   Swimmer::show();
+  //resetto la striscia perchè ha finito.
+  if (s.isFinish()){
+      s.reset();
+      start1 = millis();
+    }
+
+
+
 }
