@@ -8,17 +8,16 @@
 class Swimmer{
   private:
     static Adafruit_NeoPixel * strip;
-    unsigned int nLed, pos, step, r, g, b, nVasche = 1, nRipetizioni = 0, nSerie = 0, vascheRagg, nRipRagg=0,
-      nSerieRagg;
-    bool isSerieRagg = false;
+    unsigned int nLed, pos, step, r, g, b, nVasche = 1, nRipetizioni = 0, nSerie = 0, totVasche , totRip, nSerieTotRag, totSerie;
+    bool isSerieRagg = false, isSerieTotRagg = false, firsTime = false;
+
   public:
 
-    // Swimmer(Segmento,posizione,step,r,g,b,nvascheragg, nripragg,ntotripetizioni, nserieragg, ntotserie)
-    Swimmer(unsigned int p_nLed, unsigned int p_pos, unsigned int p_step, unsigned int p_r, unsigned int p_g,
-       unsigned int p_b, unsigned int nvascheragg, unsigned int nripragg, unsigned int nserieragg,
-      unsigned int ntotvasche, unsigned int ntotripetizioni,   unsigned int ntotserie);
 
-unsigned int nTotVasche, nTotRipetizioni, nTotSerie, pausaRip, pausaSerie; // INPUT VISIBILI DALL'ESTERNO
+    bool downStart = false; //parte dalla vasca di ritorno
+
+    Swimmer(unsigned int p_nLed, unsigned int p_pos, unsigned int p_step, unsigned int p_r, unsigned int p_g, unsigned int p_b, unsigned int totvasche, unsigned int totrip, unsigned int totserie);
+
     unsigned int getNled();
 
     unsigned int getLength();
@@ -33,27 +32,25 @@ unsigned int nTotVasche, nTotRipetizioni, nTotSerie, pausaRip, pausaSerie; // IN
 
     void lightup();
 
-    unsigned int doStep();
+    void doStep();
 
-    unsigned int undoStep();
+    void undoStep();
 
     void start();
 
+    unsigned int getNvasche();
 
-    //unsigned int getNvasche(unsigned int vasche);
+    bool isFinishSerie();
 
-      unsigned int getNvasche();
+    void resetSerie();
 
-    bool isFinish();
+    bool isFinishSerieTot();
 
-    void reset();
-
+    void resetSerieTot();
 
     void autoStep(bool autoLightUp);
 
-
-
-//unsigned long checkVasche(unsigned int nVasche);
+    void isFirstTime(); // f. è la prima volta che parte
 
 };
 

@@ -2,15 +2,12 @@
 
 Adafruit_NeoPixel *Swimmer::strip;
 
-// Swimmer(Segmento,posizione,step,r,g,b, nripragg,ntotripetizioni, nserieragg, ntotserie)
-
-Swimmer::Swimmer(unsigned int p_nLed, unsigned int p_pos, unsigned int p_step, unsigned int p_r, unsigned int p_g, unsigned int p_b, unsigned int vascheragg, unsigned int nripragg, unsigned int nserieragg, unsigned int ntotvasche, unsigned int ntotripetizioni, unsigned int ntotserie){
-vascheRagg = vascheragg;
-  nRipRagg = nripragg;  // PASSO AL PARAMETRO PRIVATO nRipRagg il valore di nripragg PUBBLICO
-  nSerieRagg = nserieragg;
- nTotVasche = ntotvasche;
- nTotRipetizioni = ntotripetizioni;
-  nTotSerie = ntotserie;
+Swimmer::Swimmer(unsigned int p_nLed, unsigned int p_pos, unsigned int p_step, unsigned int p_r, unsigned int p_g, unsigned int p_b, unsigned int totvasche, unsigned int totrip, unsigned int totserie){
+/*firsTime = firstTime;
+*/
+  totVasche = totvasche +1;
+  totRip = totrip;
+  totSerie = totserie;
   nLed = p_nLed;
   step = p_step;
   r = p_r;
@@ -33,79 +30,86 @@ void Swimmer::show(){
   strip->show();
 }
 
-unsigned int  Swimmer::doStep(){  // incrementa in avanti
+void Swimmer::doStep(){  // incrementa in avanti
+
+
   int start_neg = pos;
   if (start_neg < 0)
     start_neg = 0;
   for (int i=start_neg; i<=pos+step-1; i++){
     strip->setPixelColor(i, 0,0,0);
   }
-  pos += step;
-  if (pos >= strip->numPixels()-1)
-    //nVasche++;
-    vascheRagg++;
+  pos += step; //incrementa pos del valore di step
+  Serial.print("dostep pos & vasche=");
+  //Serial.println(strip->numPixels()); // pos=110 sempre
+Serial.print(pos);
+Serial.print(" & ");
+  Serial.println(nVasche);
 
-    if (vascheRagg == nTotVasche){
-//nRipetizioni++;
+if (pos >= strip->numPixels()-1){
+  //if (pos == strip->numPixels()-1){ // non va
+    nVasche++;
 
-          nRipRagg++;
-          pausaRip=15000
-          return pausaRip;
-          if(nRipRagg == nTotRipetizioni){
-            nSerieRagg++;
-            pausaSerie=60000;
-            return pausaSerie;
-            }
-            if(nSerieRagg == nTotSerie){
-              isSerieRagg =true;
-            }
 
-        //  if(nVasche ==nTotVasche){
-          //        nRipetizioni++;
-// return pausa ripetizioni
-//if (nRipetizioni == ntotripetizioni){
-//nSerie++;
-//return pausa Serie
-  //if (nSerie ==nTotSerie){
-    //isSerieRagg = true;
-    //}
-//}
-        //  if (nRipetizioni == nSerie){
-          //  nSerie++;
-        //    if (nSerie == nTotSerie){
-        //      isSerieRagg = true;
-          //  }
+    Serial.print("do step nvasche=");
+    Serial.println(nVasche);
+    if (nVasche == totVasche){
+      nVasche = 0;
+      nRipetizioni++;
 
-      //    }
+
+        isSerieRagg = true;
+
+      if (nRipetizioni == totRip){
+        isSerieRagg = true;
+        nSerie++;
+        if (nSerie == totSerie){
+          isSerieTotRagg = true;
         }
 
-
+      }
+    }
+  }
 }
 
-unsigned int Swimmer::undoStep(){  // decrementa
+void Swimmer::undoStep(){  // decrementa
+
+
   int finish_neg = pos+nLed-1+step;
-  if (finish_neg >= strip->numPixels())
+    if (finish_neg >= strip->numPixels())
     finish_neg = strip->numPixels()-1;
-  for (int i=pos+nLed-1; i<finish_neg; i++){
+      for (int i=pos+nLed-1; i<finish_neg; i++){
     strip->setPixelColor(i, 0,0,0);
   }
   pos -= step;
-  if (pos <= 0)
-    vascheRagg++;
 
-    if (vascheRagg == nTotVasche){
-        nRipRagg++;
-        pausaRip=15000;
-        return pausaRip;
-        if (nRipRagg == nTotRipetizioni){
-          pausaSerie=60000;
-          nSerieRagg++;
-          if (nSerieRagg == nTotSerie){
-            isSerieRagg = true;
-          }
+  Serial.print("undostep pos=");
+  Serial.println(pos);
 
+  Serial.print(" & ");
+    Serial.println(nVasche);
+
+  if (pos <= 0){
+
+    Serial.print("undo step nvasche=");
+    Serial.println(nVasche);
+    nVasche++;
+      if (nVasche == totVasche){
+
+nVasche = 0;
+
+      nRipetizioni++;
+        isSerieRagg = true;
+      if (nRipetizioni == totRip){
+        nSerie++;
+        isSerieRagg = true;
+        if (nSerie == totSerie){
+          isSerieRagg = true;
         }
+
       }
+    }
+  }
 
 }
 
@@ -126,14 +130,23 @@ unsigned int Swimmer::getPos(){
   return pos;
 }
 
-bool Swimmer::isFinish(){
+bool Swimmer::isFinishSerie(){
+
   return isSerieRagg;
 }
 
-void Swimmer::autoStep(bool autoLightUp = false){
+bool Swimmer::isFinishSerieTot(){
+  return isSerieTotRagg;
+}
 
-  //if(nVasche %2 == 0){    //controlla se pari
-if(nvascheRagg %2 ==0){
+void Swimmer::autoStep(bool autoLightUp = false){ // contollo andata e ritorno
+
+/*isFirstTime();
+*/
+if (nVasche == 0)
+doStep();
+
+  if(nVasche %2 == 0){    //controlla se pari
     undoStep();
   }else {
     doStep();
@@ -142,11 +155,28 @@ if(nvascheRagg %2 ==0){
     lightup();
 }
 
+  void Swimmer::resetSerie(){
 
+    nVasche = 1;
+    nRipetizioni = 0;
+    isSerieRagg = false;
+  }
 
-void Swimmer::reset(){
-  nVasche = 1;
-  nRipetizioni = 0;
-  nSerie = 0;
-  isSerieRagg = false;
+  void Swimmer::resetSerieTot(){
+    resetSerie();
+    nSerie = 0;
+    isSerieTotRagg = false;
+  }
+
+/*  void Swimmer::isFirstTime(){
+if (firsTime == true && downStart == false ){
+nVasche = 0;
+doStep();
 }
+else{
+//else(firsTime && downStart == true){
+  nVasche = 0;
+undoStep();
+}
+}
+*/
