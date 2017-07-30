@@ -35,7 +35,7 @@ void setup(){
   start2 = start1;
   start3 = start1;
   recupero = 0;
- pausaSerie = 0;
+  pausaSerie = 0;
   pausaRip = 0;
 }
 
@@ -46,10 +46,10 @@ void loop(){
   }
   Swimmer::show();
   //Singola serie finita.
-if(s.isFinishRip()){
-s.resetRip();
-  timer1 = millis();
-  start1 = timer1;
-  recupero = 5000;
-}
+  if(s.isFinishRip()){
+    s.resetRip();
+    timer1 = millis();
+    start1 = timer1;
+    recupero = 5000;
+  }
 }
