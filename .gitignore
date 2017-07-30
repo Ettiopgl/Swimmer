@@ -14,6 +14,8 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+platformio.ini
+
 # Windows shortcuts
 *.lnk
 
