@@ -9,7 +9,7 @@ class Swimmer{
   private:
     static Adafruit_NeoPixel * strip;
     unsigned int nLed, pos, step, r, g, b, nVasche = 1, nRipetizioni = 0, nSerie = 0, totVasche , totRip, nSerieTotRag, totSerie;
-    bool isSerieRagg = false, isSerieTotRagg = false, firsTime = false;
+    bool isRipRagg = false, isSerieRagg = false, isSerieTotRagg = false, firsTime = false;
 
   public:
 
@@ -28,8 +28,6 @@ class Swimmer{
 
     static void show();
 
-    //void lightup();
-
     void lightup();
 
     void doStep();
@@ -40,7 +38,11 @@ class Swimmer{
 
     unsigned int getNvasche();
 
+    bool isFinishRip();
+
     bool isFinishSerie();
+
+    void resetRip();
 
     void resetSerie();
 
@@ -50,7 +52,7 @@ class Swimmer{
 
     void autoStep(bool autoLightUp);
 
-    void isFirstTime(); // f. è la prima volta che parte
+    void isFirstTime();
 
 };
 
