@@ -5,9 +5,9 @@
 #include <Adafruit_NeoPixel.h>
 #include <Swimmer.h>
 #include <MsTimer2.h>
-#define MCD 10
+#define MCD 1
 #define DEBUG 0
-#define TIMER1 1
+#define TIMER1 7
 
 //volatile serve al compilatore per indicare che quella variabile viene gestita da una funzione "non standard".
 //variabile che dice se sono passati effettivamente 10ms
@@ -18,7 +18,7 @@ volatile int cron = 0;
 //Funzione che viene chiamata ogni MCD millisecondi.
 void base_dei_tempi(){
   cron++;
-  if (cron == TIMER1)
+  if (cron >= TIMER1)
     was_passed = true;
 }
 
